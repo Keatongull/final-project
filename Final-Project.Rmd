@@ -17,8 +17,8 @@ knitr::opts_chunk$set(echo = TRUE)
 This project analyzes baseball player performance using a dataset of player statistics. Specifically, we investigate player hits in relation to other variables such as team, position, and at-bats. Understanding these relationships can help scouts and managers make more data-driven decisions.
 
 ### Research Questions
-The study will address the following research questions using different inferential statistical methods:
-1. Is there a significant difference in the mean number of hits between teams with a winning record (above 50%) and teams with a losing record (below 50%)?
+The study will address the following research questions using different inferential statistical methods:<br>
+1. Is there a significant difference in the mean number of hits/game between teams with a winning record (above 50%) and teams with a losing record (below 50%)?<br>
 2. Is the average batting average of American League (AL) teams significantly greater than the overall league-wide average?
   
 
@@ -26,24 +26,76 @@ The study will address the following research questions using different inferent
 ## Methodology
 
 ### Data Description
+The Dataset "Baseball Hits" was collected from Wiley eTextbook datasets. The data set consists of the following variables:
 
-```{r}
+- **Team and League**: ARI(NL), ATL(NL), BAL(AL), BOS(AL), etc.
+- **Team Stats**:
+    - Wins (out of 162)
+    - Runs (Total)
+    - Hits (Total)
+    - Doubles (Total)
+    - Triples (Total)
+    - Home Runs (Total)
+    - RBI (Total)
+    - Stolen Bases (Total)
+    - Caught Stealing (Total)
+    - Walks (Total)
+    - Strikeouts (Total)
+    - Batting Average (Average)
 
-```
 
 ### Data Analysis Plan
 
 
 
+```{r}
+library(dplyr)
+library(ggplot2)
+BBH = read.csv('BaseballHits.csv')
+str(BBH)
+```
+
+
+### Hypotheses
+- The teams with a winning season (above 50%) have a much higher average number of hits/game compared to teams with a losing season (below 50%).
+
+```{r}
+library(dplyr)
+
+BBH$Hits_per_Game <- BBH$Hits / 162  # Calculate Hits per Game
+BBH$Winning_Record <- ifelse(BBH$Wins > 81, "Winning", "Losing")  # Winning Record
+
+# data = data.frame(Hits_per_game, Winning_Record)
+
+# Group by Winning_Record and summarize Mean for Winning and Losing
+summary_stats <- BBH %>%
+  group_by(Winning_Record) %>%
+  summarise(
+    Mean_Hits = mean(Hits_per_Game),
+    SD_Hits = sd(Hits_per_Game),
+    Count = n()
+  )
+
+summary_stats
+
+# print(data)
+
+boxplot(Hits_per_Game ~ Winning_Record, data=BBH)
+
+t.test(Hits_per_Game ~ Winning_Record, alternative="greater", conf.level=0.95, data=BBH)
+```
+
 ### Hypotheses
 
-- **t-test**  
 
+- **z-test**
 
-- **z-test**  
+### Hypotheses
 
 
 - **Chi-square**  
+
+### Hypotheses
 
 
 - **Regression**  
