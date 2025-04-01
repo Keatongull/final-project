@@ -19,7 +19,7 @@ This project analyzes baseball player performance using a dataset of player stat
 ### Research Questions
 The study will address the following research questions using different inferential statistical methods:<br>
 1. Is there a significant difference in the mean number of hits/game between teams with a winning record (above 50%) and teams with a losing record (below 50%)?<br>
-2. Is the average batting average of American League (AL) teams significantly greater than the overall league-wide average?
+2. Does the proportion of hits to runs for NL league vary significantly from that of the AL league?
   
 
 
@@ -60,8 +60,6 @@ str(BBH)
 - The teams with a winning season (above 50%) have a much higher average number of hits/game compared to teams with a losing season (below 50%).
 
 ```{r}
-library(dplyr)
-
 BBH$Hits_per_Game <- BBH$Hits / 162  # Calculate Hits per Game
 BBH$Winning_Record <- ifelse(BBH$Wins > 81, "Winning", "Losing")  # Winning Record
 
@@ -86,9 +84,44 @@ t.test(Hits_per_Game ~ Winning_Record, alternative="greater", conf.level=0.95, d
 ```
 
 ### Hypotheses
+- The National League (NL) teams have a significantly different proportion of hits to runs compared to the American League (AL) teams.
 
+```{r}
+AL_Teams = BBH %>% filter(League == "AL")
+NL_Teams = BBH %>% filter(League == "NL")
 
-- **z-test**
+NL_Hit_Total = sum(NL_Teams$Hits)
+NL_Run_Total = sum(NL_Teams$Runs)
+NL_Hit_Run_Prop = NL_Run_Total/NL_Hit_Total
+
+print(NL_Hit_Total)
+print(NL_Run_Total)
+
+AL_Hit_Total = sum(AL_Teams$Hits)
+AL_Run_Total = sum(AL_Teams$Runs)
+AL_Hit_Run_Prop = AL_Run_Total/AL_Hit_Total
+
+print(AL_Hit_Total)
+print(AL_Run_Total)
+
+# Create a data frame to display the results
+hit_run_prop_df <- data.frame(
+  League = c("NL", "AL"),
+  Hit_to_Run_Proportion = c(NL_Hit_Run_Prop, AL_Hit_Run_Prop)
+)
+
+# Print the data frame
+print(hit_run_prop_df)
+
+ggplot(hit_run_prop_df, aes(x=League, y=Hit_to_Run_Proportion, fill = League)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Proportion of Hits To Runs Between AL and NL",
+       x = "League",
+       y = "Hit to Run Proportion") +
+  theme_minimal()
+
+prop.test(x=c(AL_Run_Total, NL_Run_Total), n=c(AL_Hit_Total, NL_Hit_Total), correct = FALSE)
+```
 
 ### Hypotheses
 
