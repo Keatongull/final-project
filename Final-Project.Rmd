@@ -17,7 +17,10 @@ knitr::opts_chunk$set(echo = TRUE)
 This project analyzes baseball player performance using a dataset of player statistics. Specifically, we investigate player hits in relation to other variables such as team, position, and at-bats. Understanding these relationships can help scouts and managers make more data-driven decisions.
 
 ### Research Questions
-
+The study will address the following research questions using different inferential statistical methods:
+1. Is there a significant difference in the mean number of hits between teams with a winning record (above 50%) and teams with a losing record (below 50%)?
+2. Is the average batting average of American League (AL) teams significantly greater than the overall league-wide average?
+  
 
 
 ## Methodology
